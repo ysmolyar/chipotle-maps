@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{{ location.name }} - Chipotle Rating App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8">{{ location.name }}</h1>
+        <p class="text-xl mb-4">{{ location.address }}</p>
+
+        <h2 class="text-2xl font-semibold mb-4">Ratings</h2>
+        <div class="bg-white rounded shadow-lg p-6 mb-8">
+            <p class="text-lg mb-2">Average Rating: {{ "%.2f"|format(location.to_dict(include_ratings=True)['average_rating']) }}/5</p>
+            <button onclick="toggleRatingForm()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Rating</button>
+
+            <div class="rating-form mt-4">
+                <form id="rating-form" class="space-y-4">
+                    <div>
+                        <label for="portion_size" class="block">Portion Size:</label>
+                        <input type="number" id="portion_size" name="portion_size" min="1" max="5" required class="border rounded px-2 py-1">
+                    </div>
+                    <div>
+                        <label for="guacamole_availability" class="block">Guacamole Availability:</label>
+                        <input type="number" id="guacamole_availability" name="guacamole_availability" min="1" max="5" required class="border rounded px-2 py-1">
+                    </div>
+                    <div>
+                        <label for="cleanliness" class="block">Cleanliness:</label>
+                        <input type="number" id="cleanliness" name="cleanliness" min="1" max="5" required class="border rounded px-2 py-1">
+                    </div>
+                    <div>
+                        <label for="friendliness" class="block">Friendliness:</label>
+                        <input type="number" id="friendliness" name="friendliness" min="1" max="5" required class="border rounded px-2 py-1">
+                    </div>
+                    <button type="button" onclick="submitRating({{ location.id }})" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Submit Rating</button>
+                </form>
+            </div>
+        </div>
+
+        <h2 class="text-2xl font-semibold mb-4">Recent Ratings</h2>
+        <div class="bg-white rounded shadow-lg p-6">
+            {% for rating in location.to_dict(include_ratings=True)['ratings'][-5:] %}
+            <div class="mb-4 pb-4 border-b last:border-b-0">
+                <p>Average: {{ "%.2f"|format(rating['average']) }}/5</p>
+                <p>Portion Size: {{ rating['portion_size'] }}/5</p>
+                <p>Guacamole Availability: {{ rating['guacamole_availability'] }}/5</p>
+                <p>Cleanliness: {{ rating['cleanliness'] }}/5</p>
+                <p>Friendliness: {{ rating['friendliness'] }}/5</p>
+                <p class="text-sm text-gray-500">Submitted on: {{ rating['created_at'] }}</p>
+            </div>
+            {% endfor %}
+        </div>
+
+        <a href="/" class="inline-block mt-8 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Back to Map</a>
+    </div>
+
+    <script src="{{ url_for('static', filename='js/ratings.js') }}"></script>
+</body>
+</html>

@@ -1,0 +1,10 @@
+@import 'https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css';
+
+#map {
+    height: 400px;
+    width: 100%;
+}
+
+.rating-form {
+    display: none;
+}
