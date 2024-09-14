@@ -13,27 +13,20 @@
 
         <h2 class="text-2xl font-semibold mb-4">Ratings</h2>
         <div class="bg-white rounded shadow-lg p-6 mb-8">
-            <p class="text-lg mb-2">Average Rating: {{ "%.2f"|format(location.to_dict(include_ratings=True)['average_rating']) }}/5</p>
+            <p class="text-lg mb-2">Average Rating: {{ "%.2f"|format(location.to_dict(include_ratings=True)['average_rating']) }}/10</p>
             <button onclick="toggleRatingForm()" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Add Rating</button>
 
             <div class="rating-form mt-4">
                 <form id="rating-form" class="space-y-4">
-                    <div>
-                        <label for="portion_size" class="block">Portion Size:</label>
-                        <input type="number" id="portion_size" name="portion_size" min="1" max="5" required class="border rounded px-2 py-1">
+                    {% for category in ['cleanliness', 'friendliness', 'portion_size', 'speed_of_service', 'food_quality', 'value_for_money'] %}
+                    <div class="mb-4">
+                        <label class="block mb-2">{{ category|replace('_', ' ')|title }}:</label>
+                        <div class="flex items-center">
+                            <input type="range" name="{{ category }}" min="1" max="10" value="5" class="w-full" oninput="this.nextElementSibling.value = this.value">
+                            <output class="ml-2">5</output>
+                        </div>
                     </div>
-                    <div>
-                        <label for="guacamole_availability" class="block">Guacamole Availability:</label>
-                        <input type="number" id="guacamole_availability" name="guacamole_availability" min="1" max="5" required class="border rounded px-2 py-1">
-                    </div>
-                    <div>
-                        <label for="cleanliness" class="block">Cleanliness:</label>
-                        <input type="number" id="cleanliness" name="cleanliness" min="1" max="5" required class="border rounded px-2 py-1">
-                    </div>
-                    <div>
-                        <label for="friendliness" class="block">Friendliness:</label>
-                        <input type="number" id="friendliness" name="friendliness" min="1" max="5" required class="border rounded px-2 py-1">
-                    </div>
+                    {% endfor %}
                     <button type="button" onclick="submitRating({{ location.id }})" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600">Submit Rating</button>
                 </form>
             </div>
@@ -43,11 +36,13 @@
         <div class="bg-white rounded shadow-lg p-6">
             {% for rating in location.to_dict(include_ratings=True)['ratings'][-5:] %}
             <div class="mb-4 pb-4 border-b last:border-b-0">
-                <p>Average: {{ "%.2f"|format(rating['average']) }}/5</p>
-                <p>Portion Size: {{ rating['portion_size'] }}/5</p>
-                <p>Guacamole Availability: {{ rating['guacamole_availability'] }}/5</p>
-                <p>Cleanliness: {{ rating['cleanliness'] }}/5</p>
-                <p>Friendliness: {{ rating['friendliness'] }}/5</p>
+                <p>Average: {{ "%.2f"|format(rating['average']) }}/10</p>
+                <p>Cleanliness: {{ rating['cleanliness'] }}/10</p>
+                <p>Friendliness: {{ rating['friendliness'] }}/10</p>
+                <p>Portion Size: {{ rating['portion_size'] }}/10</p>
+                <p>Speed of Service: {{ rating['speed_of_service'] }}/10</p>
+                <p>Food Quality: {{ rating['food_quality'] }}/10</p>
+                <p>Value for Money: {{ rating['value_for_money'] }}/10</p>
                 <p class="text-sm text-gray-500">Submitted on: {{ rating['created_at'] }}</p>
             </div>
             {% endfor %}

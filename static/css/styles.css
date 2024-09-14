@@ -1,10 +1,98 @@
 @import 'https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css';
 
 #map {
-    height: 400px;
+    height: 100vh;
     width: 100%;
+}
+
+.full-screen-map {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.toolbar {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 1000;
+    background-color: rgba(255, 255, 255, 0.8);
+    padding: 10px;
+    border-radius: 5px;
 }
 
 .rating-form {
     display: none;
+}
+
+.custom-popup .leaflet-popup-content-wrapper {
+    background-color: white;
+    color: #333;
+    border-radius: 8px;
+    padding: 0;
+    overflow: hidden;
+}
+
+.custom-popup .leaflet-popup-content {
+    margin: 0;
+    padding: 12px;
+}
+
+.custom-popup .leaflet-popup-tip-container {
+    display: none;
+}
+
+.location-popup h3 {
+    margin-top: 0;
+    color: #2c3e50;
+}
+
+.location-popup p {
+    color: #7f8c8d;
+}
+
+.location-popup a, .location-popup button {
+    text-decoration: none;
+    transition: background-color 0.3s, color 0.3s;
+}
+
+.view-details-btn {
+    background-color: #3498db;
+    color: white !important; /* Use !important to override any conflicting styles */
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 0.875rem;
+    text-decoration: none !important; /* Remove underline and use !important */
+    display: inline-block;
+}
+
+.view-details-btn:hover {
+    background-color: #2980b9;
+    color: white !important; /* Ensure text stays white on hover */
+    text-decoration: none !important; /* Ensure no underline on hover */
+}
+
+.admin-btn {
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 0.75rem;
+    color: white;
+}
+
+.edit-btn {
+    background-color: #f39c12;
+}
+
+.edit-btn:hover {
+    background-color: #d35400;
+}
+
+.delete-btn {
+    background-color: #e74c3c;
+}
+
+.delete-btn:hover {
+    background-color: #c0392b;
 }

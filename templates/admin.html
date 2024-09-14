@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin - Chipotle Rating App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <div class="flex justify-between items-center mb-8">
+            <h1 class="text-4xl font-bold">Admin - Chipotle Rating App</h1>
+            <a href="{{ url_for('logout') }}" class="bg-red-500 text-white px-4 py-2 rounded hover:bg-red-600">Logout</a>
+        </div>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-4">
+            {% for category, message in messages %}
+            <div class="p-4 {% if category == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <div id="admin-map" class="h-96 mb-4"></div>
+        
+        <div class="bg-white rounded shadow-lg p-6 mb-8">
+            <h2 class="text-2xl font-semibold mb-4">Manage Locations</h2>
+            <a href="{{ url_for('add_location_form') }}" class="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600 mb-4 inline-block">Add New Location</a>
+            <ul id="location-list" class="space-y-2">
+                {% for location in locations %}
+                <li>
+                    <strong>{{ location.name }}</strong> - {{ location.address }}
+                    <a href="{{ url_for('manage_location', location_id=location.id) }}" class="text-blue-500 hover:underline">Edit</a>
+                    <button onclick="deleteLocation({{ location.id }})" class="text-red-500 hover:underline">Delete</button>
+                </li>
+                {% endfor %}
+            </ul>
+        </div>
+
+        <a href="/" class="inline-block mt-8 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Back to Map</a>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/admin_map.js') }}"></script>
+    <script>
+        function deleteLocation(id) {
+            if (confirm('Are you sure you want to delete this location?')) {
+                fetch(`/api/locations/${id}`, { method: 'DELETE' })
+                    .then(response => response.json())
+                    .then(data => {
+                        alert(data.message);
+                        location.reload();
+                    });
+            }
+        }
+    </script>
+</body>
+</html>

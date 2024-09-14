@@ -27,3 +27,14 @@ function toggleRatingForm() {
     const form = document.querySelector('.rating-form');
     form.style.display = form.style.display === 'none' ? 'block' : 'none';
 }
+
+// Initialize sliders
+document.addEventListener('DOMContentLoaded', function() {
+    const sliders = document.querySelectorAll('input[type="range"]');
+    sliders.forEach(slider => {
+        slider.nextElementSibling.value = slider.value;
+        slider.addEventListener('input', function() {
+            this.nextElementSibling.value = this.value;
+        });
+    });
+});

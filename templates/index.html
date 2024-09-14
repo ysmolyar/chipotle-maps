@@ -6,13 +6,68 @@
     <title>Chipotle Rating App</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+    <style>
+        #splash-screen {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image: url('https://a.tile.openstreetmap.org/3/1/2.png');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s;
+        }
+        #splash-screen.fade-out {
+            opacity: 0;
+        }
+        #splash-content {
+            background-color: rgba(255, 255, 255, 0.8);
+            padding: 20px;
+            border-radius: 10px;
+            text-align: center;
+        }
+    </style>
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto px-4 py-8">
-        <h1 class="text-4xl font-bold mb-8 text-center">Chipotle Rating App</h1>
-        <div id="map" class="mb-8 rounded shadow-lg"></div>
+<body>
+    <div id="splash-screen">
+        <div id="splash-content">
+            <h1 class="text-4xl font-bold mb-4">Chipotle Rating App</h1>
+            <p class="text-xl">Loading map...</p>
+        </div>
     </div>
-
+    <div id="map" class="full-screen-map"></div>
+    <div class="toolbar">
+        <h1 class="text-2xl font-bold">Chipotle Rating App</h1>
+        {% if session.get('logged_in') %}
+            <a href="{{ url_for('logout') }}" class="bg-red-500 text-white px-3 py-1 text-sm rounded hover:bg-red-600">Logout</a>
+            <button id="add-location" class="bg-green-500 text-white px-3 py-1 text-sm rounded hover:bg-green-600">Add Location</button>
+        {% else %}
+            <a href="{{ url_for('login') }}" class="bg-blue-500 text-white px-3 py-1 text-sm rounded hover:bg-blue-600">Login</a>
+        {% endif %}
+    </div>
+    <div id="location-form" class="hidden bg-white p-4 rounded shadow-lg absolute top-20 left-4">
+        <h2 class="text-xl font-semibold mb-2">Add/Edit Location</h2>
+        <form id="location-form-content">
+            <input type="hidden" id="location-id">
+            <div class="mb-2">
+                <label for="name" class="block">Name:</label>
+                <input type="text" id="name" required class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-2">
+                <label for="address" class="block">Address:</label>
+                <input type="text" id="address" required class="w-full border rounded px-2 py-1">
+            </div>
+            <input type="hidden" id="latitude">
+            <input type="hidden" id="longitude">
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Save Location</button>
+            <button type="button" id="cancel-location" class="bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600 ml-2">Cancel</button>
+        </form>
+    </div>
     <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
     <script src="{{ url_for('static', filename='js/map.js') }}"></script>
 </body>

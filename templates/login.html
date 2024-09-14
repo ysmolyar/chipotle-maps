@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Chipotle Rating App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8">Admin Login</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-4">
+            {% for category, message in messages %}
+            <div class="p-4 {% if category == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <form action="{{ url_for('login') }}" method="POST" class="bg-white rounded shadow-lg p-6 mb-8">
+            <div class="mb-4">
+                <label for="username" class="block mb-2">Username:</label>
+                <input type="text" id="username" name="username" required class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-4">
+                <label for="password" class="block mb-2">Password:</label>
+                <input type="password" id="password" name="password" required class="w-full border rounded px-2 py-1">
+            </div>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Login</button>
+        </form>
+
+        <a href="/" class="inline-block mt-8 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Back to Map</a>
+    </div>
+</body>
+</html>

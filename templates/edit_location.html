@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit Location - Chipotle Rating App</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
+</head>
+<body class="bg-gray-100">
+    <div class="container mx-auto px-4 py-8">
+        <h1 class="text-4xl font-bold mb-8">Edit Location</h1>
+        
+        {% with messages = get_flashed_messages(with_categories=true) %}
+        {% if messages %}
+        <div class="mb-4">
+            {% for category, message in messages %}
+            <div class="p-4 {% if category == 'success' %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %} rounded">
+                {{ message }}
+            </div>
+            {% endfor %}
+        </div>
+        {% endif %}
+        {% endwith %}
+        
+        <form id="edit-location-form" action="{{ url_for('edit_location', location_id=location.id) }}" method="POST" class="bg-white rounded shadow-lg p-6 mb-8">
+            <div class="mb-4">
+                <label for="name" class="block mb-2">Name:</label>
+                <input type="text" id="name" name="name" value="{{ location.name }}" required class="w-full border rounded px-2 py-1">
+            </div>
+            <div class="mb-4">
+                <label for="address" class="block mb-2">Address:</label>
+                <input type="text" id="address" name="address" value="{{ location.address }}" required class="w-full border rounded px-2 py-1">
+            </div>
+            <div id="admin-map" class="h-64 mb-4"></div>
+            <p class="mb-2">Click on the map to update the location coordinates</p>
+            <input type="hidden" id="latitude" name="latitude" value="{{ location.latitude }}" required>
+            <input type="hidden" id="longitude" name="longitude" value="{{ location.longitude }}" required>
+            <button type="submit" class="bg-blue-500 text-white px-4 py-2 rounded hover:bg-blue-600">Update Location</button>
+        </form>
+
+        <a href="{{ url_for('admin') }}" class="inline-block mt-8 bg-gray-500 text-white px-4 py-2 rounded hover:bg-gray-600">Back to Admin</a>
+    </div>
+
+    <script src="https://unpkg.com/leaflet@1.7.1/dist/leaflet.js"></script>
+    <script src="{{ url_for('static', filename='js/admin_map.js') }}"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            initAdminMap();
+            const lat = {{ location.latitude }};
+            const lng = {{ location.longitude }};
+            adminMap.setView([lat, lng], 13);
+            marker = L.marker([lat, lng]).addTo(adminMap);
+        });
+    </script>
+</body>
+</html>
