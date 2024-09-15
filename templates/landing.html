@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Chipotle Rating App</title>
+    <title>ChipotleMaps</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.7.1/dist/leaflet.css" />
     <style>
@@ -146,7 +146,7 @@
         <div class="landing-form">
             <button class="close-btn" id="close-landing">&times;</button>
             <h1>Join Our Waitlist</h1>
-            <p>Sign up with your email to get early access to the Chipotle Rating App.</p>
+            <p>Sign up with your email to get early access to ChipotleMaps.</p>
             <form action="{{ url_for('signup') }}" method="POST">
                 <input type="email" name="email" placeholder="Enter your email" required>
                 <button type="submit">Sign Up</button>

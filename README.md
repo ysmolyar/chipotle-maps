@@ -1,4 +1,4 @@
-# Chipotle Rating App
+# ChipotleMaps
 
 This application allows users to view and rate Chipotle locations in California. It features an interactive map, location details, and an admin interface for managing locations.
 

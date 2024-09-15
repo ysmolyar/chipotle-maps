@@ -1,5 +1,5 @@
 #!/bin/bash
-echo "Starting Chipotle Rating App..."
+echo "Starting Chipotle Maps..."
 
 # Create virtual environment if it doesn't exist
 if [ ! -d "venv" ]; then
