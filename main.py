@@ -1,4 +1,4 @@
-from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session
+from flask import Flask, render_template, request, jsonify, redirect, url_for, flash, session, render_template
 from models import db, Location, Rating
 from config import Config
 import os
@@ -94,9 +94,27 @@ def extract_street_name(address):
     
     return street_name.strip()
 
-@app.route('/')
-def index():
+# Move existing root route to '/app'
+@app.route('/app')
+def app_main():
     return render_template('index.html')
+
+# Add new root route for landing page
+@app.route('/')
+def landing():
+    return render_template('landing.html')
+
+# Add route to handle signup
+@app.route('/signup', methods=['POST'])
+def signup():
+    email = request.form.get('email')
+    # TODO: Add email to waitlist storage
+    return redirect('/thank-you')
+
+# Optionally, add thank-you page route
+@app.route('/thank-you')
+def thank_you():
+    return render_template('thank_you.html')
 
 @app.route('/api/locations')
 def get_locations():

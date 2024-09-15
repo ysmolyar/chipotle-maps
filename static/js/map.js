@@ -5,6 +5,8 @@ let markers = {};
 let currentMarker;
 let isAdmin = false;
 
+const MIN_LOADING_TIME = 2000; // 2 seconds minimum loading time
+
 function getUserLocation(callback) {
     console.log("Getting user location");
     if ("geolocation" in navigator) {
@@ -26,10 +28,18 @@ function getUserLocation(callback) {
 
 function initMap() {
     console.log("Initializing map");
+
+    const mapElement = document.getElementById('map');
+    const mapPlaceholder = document.getElementById('map-placeholder');
+    if (!mapElement) {
+        console.log('No map element found. Skipping map initialization.');
+        return;
+    }
+
     getUserLocation(location => {
-        const defaultView = [39.8283, -98.5795];
+        const defaultView = [39.8283, -98.5795]; // Center of USA
         const zoom = location ? 13 : 4;
-        
+
         console.log("Creating map with view:", location || defaultView);
         map = L.map('map', {
             zoomControl: false
@@ -38,6 +48,13 @@ function initMap() {
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
         }).addTo(map);
+
+        // Remove placeholder when map is fully loaded
+        map.whenReady(() => {
+            if (mapPlaceholder) {
+                mapPlaceholder.style.display = 'none';
+            }
+        });
 
         L.control.zoom({
             position: 'topright'
@@ -64,18 +81,7 @@ function initMap() {
             };
             showLocationPreview(location);
         });
-
-        // Hide splash screen when map is ready
-        hideSplashScreen();
     });
-}
-
-function hideSplashScreen() {
-    const splashScreen = document.getElementById('splash-screen');
-    splashScreen.classList.add('fade-out');
-    setTimeout(() => {
-        splashScreen.style.display = 'none';
-    }, 500); // Wait for fade out animation to complete
 }
 
 function fetchLocations() {
@@ -83,6 +89,9 @@ function fetchLocations() {
         .then(response => response.json())
         .then(locations => {
             locations.forEach(location => addMarker(location));
+        })
+        .catch(error => {
+            console.error("Error fetching locations:", error);
         });
 }
 
@@ -174,7 +183,9 @@ function enableAdminFeatures() {
                 if (method === 'POST') {
                     addMarker({id: result.id, ...data});
                 } else {
-                    map.removeLayer(markers[id]);
+                    if (markers[id]) {
+                        map.removeLayer(markers[id]);
+                    }
                     addMarker({id, ...data});
                 }
                 locationForm.classList.add('hidden');
@@ -184,6 +195,10 @@ function enableAdminFeatures() {
                 }
                 locationFormContent.reset();
                 document.getElementById('location-id').value = '';
+            })
+            .catch(error => {
+                console.error("Error submitting location form:", error);
+                alert("An error occurred while submitting the form.");
             });
         });
     }
@@ -191,6 +206,10 @@ function enableAdminFeatures() {
 
 function editLocation(id) {
     const marker = markers[id];
+    if (!marker) {
+        console.error(`Marker with ID ${id} not found.`);
+        return;
+    }
     const latLng = marker.getLatLng();
     document.getElementById('location-id').value = id;
     document.getElementById('latitude').value = latLng.lat.toFixed(6);
@@ -202,6 +221,10 @@ function editLocation(id) {
             document.getElementById('name').value = data.name;
             document.getElementById('address').value = data.address;
             document.getElementById('location-form').classList.remove('hidden');
+        })
+        .catch(error => {
+            console.error(`Error fetching location ${id}:`, error);
+            alert("An error occurred while fetching the location details.");
         });
     
     if (currentMarker) {
@@ -217,8 +240,14 @@ function deleteLocation(id) {
             .then(response => response.json())
             .then(data => {
                 alert(data.message);
-                map.removeLayer(markers[id]);
-                delete markers[id];
+                if (markers[id]) {
+                    map.removeLayer(markers[id]);
+                    delete markers[id];
+                }
+            })
+            .catch(error => {
+                console.error(`Error deleting location ${id}:`, error);
+                alert("An error occurred while deleting the location.");
             });
     }
 }
@@ -226,6 +255,10 @@ function deleteLocation(id) {
 // Function to show location preview in modal
 function showLocationPreview(location) {
     const modal = document.getElementById('locationModal');
+    if (!modal) {
+        console.error('locationModal element not found.');
+        return;
+    }
     const modalBody = modal.querySelector('.modal-body');
     
     // Clear previous content
@@ -241,14 +274,23 @@ function showLocationPreview(location) {
     modalBody.appendChild(locationPreview);
 
     // Initialize map preview
-    const mapPreview = L.map('mapPreview').setView([location.lat, location.lng], 15);
-    L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; OpenStreetMap contributors'
-    }).addTo(mapPreview);
-    L.marker([location.lat, location.lng]).addTo(mapPreview);
+    const mapPreviewElement = document.getElementById('mapPreview');
+    if (mapPreviewElement) {
+        const mapPreview = L.map('mapPreview').setView([location.lat, location.lng], 15);
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            attribution: '&copy; OpenStreetMap contributors'
+        }).addTo(mapPreview);
+        L.marker([location.lat, location.lng]).addTo(mapPreview);
+    } else {
+        console.warn('mapPreview element not found.');
+    }
 
     // Show modal
-    $('#locationModal').modal('show');
+    if (typeof $ !== 'undefined' && typeof $.fn.modal === 'function') {
+        $('#locationModal').modal('show');
+    } else {
+        console.warn('jQuery or Bootstrap Modal is not loaded.');
+    }
 }
 
 document.addEventListener('DOMContentLoaded', () => {
