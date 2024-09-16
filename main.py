@@ -291,4 +291,4 @@ if __name__ == '__main__':
     print("Starting application...")
     init_db()
     print("Database initialized, starting Flask server...")
-    app.run(host='0.0.0.0', port=os.environ.get('PORT', 5001), ssl_context=('cert.pem', 'key.pem'))  # Use HTTPS
+    app.run(host='0.0.0.0', port=os.environ.get('PORT', 5001))  # Remove SSL context
