@@ -6,7 +6,9 @@ require('dotenv').config();
 const app = express();
 const PORT = process.env.PORT || 3000;  // Changed default to 3000
 
-app.use(cors());
+app.use(cors({
+  origin: 'http://localhost:3001' // frontend port
+}));
 app.use(express.json());
 
 // Connect to MongoDB

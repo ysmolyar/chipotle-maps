@@ -1,8 +1,10 @@
 const mongoose = require('mongoose');
 
 const ratingSchema = new mongoose.Schema({
-  locationId: String,
-  ratingValue: Number,
+  // Use ObjectId reference to Location model
+  locationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Location', required: true },
+  // Ensure rating value is between 1 and 5
+  ratingValue: { type: Number, required: true, min: 1, max: 5 },
   timestamp: { type: Date, default: Date.now }
 });
 
